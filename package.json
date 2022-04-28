@@ -1,0 +1,29 @@
+{
+  "name": "token-swapper",
+  "version": "1.0.0",
+  "description": "Smart Contract used to swap the amount in a token A to token B through the Uniswap/Pancakeswap Router.",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pere970/token-swapper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pere970/token-swapper/issues"
+  },
+  "homepage": "https://github.com/Pere970/token-swapper#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.5.0",
+    "@openzeppelin/contracts-upgradeable": "^4.5.2",
+    "@openzeppelin/truffle-upgrades": "^1.15.0",
+    "@uniswap/v2-periphery": "^1.1.0-beta.0"
+  }
+}
