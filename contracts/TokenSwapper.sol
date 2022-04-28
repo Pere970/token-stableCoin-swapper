@@ -11,8 +11,8 @@ contract TokenSwapper is Ownable {
     address public _destinationAddress;
     address public _uniswapRouterAddress;
 
-    constructor (address token, address desiredToken) {
-        _uniswapRouterAddress = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+    constructor (address token, address desiredToken, address routerAddress) {
+        _uniswapRouterAddress = routerAddress;
         _token = token;
         _desiredToken = desiredToken;
         _destinationAddress = address(this);
@@ -69,7 +69,7 @@ contract TokenSwapper is Ownable {
         uint balance = IERC20(_token).balanceOf(address(this));
         require(balance > 0, "There are not any tokens to swap");
 
-         IERC20(_token).approve(_uniswapRouterAddress, balance);
+        IERC20(_token).approve(_uniswapRouterAddress, balance);
 
         address[] memory path = new address[](2);
         path[0] = _token;
