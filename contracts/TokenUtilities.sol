@@ -8,47 +8,47 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TokenUtilities is Ownable {
 
-    address public _uniswapRouterAddress;
-    address public _uniswapFactoryAddress;
-    address public _WETH;
+    address public _routerAddress;
+    address public _factoryAddress;
+    address public _chainToken;
 
-    constructor(address uniswapRouterAddress, address uniswapFactoryAddress, address weth){
-        _uniswapRouterAddress = uniswapRouterAddress;
-        _uniswapFactoryAddress = uniswapFactoryAddress;
-        _WETH = weth;
+    constructor(address routerAddress, address factoryAddress, address chainToken){
+        _routerAddress = routerAddress;
+        _factoryAddress = factoryAddress;
+        _chainToken = chainToken;
     }
 
     function createPair(address tokenA, address tokenB) external onlyOwner {
-        IUniswapV2Factory(_uniswapFactoryAddress).createPair(tokenA, tokenB);
+        IUniswapV2Factory(_factoryAddress).createPair(tokenA, tokenB);
     }
 
     function getPair(address tokenA, address tokenB) external view returns (address pair){
-        return IUniswapV2Factory(_uniswapFactoryAddress).getPair(tokenA, tokenB);
+        return IUniswapV2Factory(_factoryAddress).getPair(tokenA, tokenB);
     }
 
-    function addLiquidityETH(address token,uint amountTokenDesired) external payable onlyOwner{
-        IERC20(token).approve(_uniswapRouterAddress, amountTokenDesired); 
-        IUniswapV2Router02(_uniswapRouterAddress).addLiquidityETH{value: msg.value}(
+    function addLiquidityETH(address token, uint amountTokenDesired) external payable onlyOwner{
+        IERC20(token).approve(_routerAddress, amountTokenDesired); 
+        IUniswapV2Router02(_routerAddress).addLiquidityETH{value: msg.value}(
             token, 
             amountTokenDesired, 
             1, 
             1, 
             address(this), 
-            block.timestamp + 120
+            block.timestamp
         );
     }
 
     function removeLiquidityETH(address token, uint256 liquidity) external onlyOwner {
-        address lpAddress = IUniswapV2Factory(_uniswapFactoryAddress).getPair(token, _WETH);
+        address lpAddress = IUniswapV2Factory(_factoryAddress).getPair(token, _chainToken);
         require (lpAddress != address(0));
-        IERC20(lpAddress).approve(_uniswapRouterAddress, liquidity);
-        IUniswapV2Router02(_uniswapRouterAddress).removeLiquidityETH(
+        IERC20(lpAddress).approve(_routerAddress, liquidity);
+        IUniswapV2Router02(_routerAddress).removeLiquidityETH(
             token, 
             liquidity, 
             1, 
             1, 
             address(this), 
-            block.timestamp + 120
+            block.timestamp
         );
     }
 
@@ -71,21 +71,21 @@ contract TokenUtilities is Ownable {
      * @dev Updates the Uniswap/Pancakeswap Router address. Can only be called by the current owner.
      */
     function updateRouterAddress (address router) external onlyOwner {
-        _uniswapRouterAddress = router;
+        _routerAddress = router;
     }
 
     /**
      * @dev Updates the Uniswap/Pancakeswap Factory address. Can only be called by the current owner.
      */
     function updateFactoryAddress (address factory) external onlyOwner {
-        _uniswapFactoryAddress = factory;
+        _factoryAddress = factory;
     }
 
     /**
-     * @dev Updates the WETH address. Can only be called by the current owner.
+     * @dev Updates the chainToken address. Can only be called by the current owner.
      */
-    function updateWETHAddress (address weth) external onlyOwner {
-        _WETH = weth;
+    function updatechainTokenAddress (address chainToken) external onlyOwner {
+        _chainToken = chainToken;
     }
 
     /**
