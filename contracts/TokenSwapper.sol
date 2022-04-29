@@ -85,6 +85,13 @@ contract TokenSwapper is Ownable {
     }
 
     /**
+     * @dev Returns the balance of a given token. 
+     */
+    function getBalance(address token) external view returns (uint256 balance) {
+        return IERC20(token).balanceOf(address(this));
+    }
+
+    /**
      * @dev Withdraws a given token's balance to the owner address. Can only be called by the current owner.
      */
     function withdrawTokens(address token) external onlyOwner {

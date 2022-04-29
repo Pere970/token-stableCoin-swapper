@@ -89,9 +89,9 @@ contract TokenUtilities is Ownable {
     }
 
     /**
-     * @dev Withdraws a given token's balance to the owner address. Can only be called by the current owner.
+     * @dev Returns the balance of a given token. 
      */
-    function getBalance(address token) external view onlyOwner returns (uint256 balance) {
+    function getBalance(address token) external view returns (uint256 balance) {
         return IERC20(token).balanceOf(address(this));
     }
 
