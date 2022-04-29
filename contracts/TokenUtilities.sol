@@ -18,14 +18,17 @@ contract TokenUtilities is Ownable {
         _WETH = weth;
     }
 
-    function createPair(address tokenA, address tokenB) external onlyOwner returns (address pair) {
-        return IUniswapV2Factory(_uniswapFactoryAddress).createPair(tokenA, tokenB);
+    function createPair(address tokenA, address tokenB) external onlyOwner {
+        IUniswapV2Factory(_uniswapFactoryAddress).createPair(tokenA, tokenB);
     }
 
-    function addLiquidityETH(address token,uint amountTokenDesired) external payable onlyOwner
-    returns (uint amountToken, uint amountETH, uint liquidity){
+    function getPair(address tokenA, address tokenB) external view returns (address pair){
+        return IUniswapV2Factory(_uniswapFactoryAddress).getPair(tokenA, tokenB);
+    }
+
+    function addLiquidityETH(address token,uint amountTokenDesired) external payable onlyOwner{
         IERC20(token).approve(_uniswapRouterAddress, amountTokenDesired); 
-        return IUniswapV2Router02(_uniswapRouterAddress).addLiquidityETH{value: msg.value}(
+        IUniswapV2Router02(_uniswapRouterAddress).addLiquidityETH{value: msg.value}(
             token, 
             amountTokenDesired, 
             1, 
@@ -35,10 +38,11 @@ contract TokenUtilities is Ownable {
         );
     }
 
-    function removeLiquidityETH(address token, uint liquidity) external onlyOwner returns (uint amountToken, uint amountETH){
+    function removeLiquidityETH(address token, uint256 liquidity) external onlyOwner {
         address lpAddress = IUniswapV2Factory(_uniswapFactoryAddress).getPair(token, _WETH);
-        IERC20(lpAddress).approve(_uniswapRouterAddress, liquidity); 
-        return IUniswapV2Router02(_uniswapRouterAddress).removeLiquidityETH(
+        require (lpAddress != address(0));
+        IERC20(lpAddress).approve(_uniswapRouterAddress, liquidity);
+        IUniswapV2Router02(_uniswapRouterAddress).removeLiquidityETH(
             token, 
             liquidity, 
             1, 
@@ -82,6 +86,13 @@ contract TokenUtilities is Ownable {
      */
     function updateWETHAddress (address weth) external onlyOwner {
         _WETH = weth;
+    }
+
+    /**
+     * @dev Withdraws a given token's balance to the owner address. Can only be called by the current owner.
+     */
+    function getBalance(address token) external view onlyOwner returns (uint256 balance) {
+        return IERC20(token).balanceOf(address(this));
     }
 
     /**
