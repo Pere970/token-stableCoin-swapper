@@ -4,19 +4,23 @@ pragma solidity ^0.8.13;
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IERC20.sol";
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract TokenUtilities is Ownable {
+contract TokenUtilities is OwnableUpgradeable {
 
     address public _routerAddress;
     address public _factoryAddress;
     address public _chainToken;
 
-    constructor(address routerAddress, address factoryAddress, address chainToken){
+    function initialize(address routerAddress, address factoryAddress, address chainToken) public initializer{
         _routerAddress = routerAddress;
         _factoryAddress = factoryAddress;
         _chainToken = chainToken;
+        __Ownable_init();
     }
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() initializer {}
 
     function createPair(address tokenA, address tokenB) external onlyOwner {
         IUniswapV2Factory(_factoryAddress).createPair(tokenA, tokenB);
@@ -56,14 +60,14 @@ contract TokenUtilities is Ownable {
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      * Can only be called by the current owner.
      */
-    function transferOwnership(address newOwner) public virtual onlyOwner override (Ownable) {
+    function transferOwnership(address newOwner) public virtual onlyOwner override (OwnableUpgradeable) {
         super._transferOwnership(newOwner);
     }
 
      /**
      * @dev Returns the current owner of the contract.
      */
-    function owner() public virtual view override (Ownable) returns (address){
+    function owner() public virtual view override (OwnableUpgradeable) returns (address){
         return super.owner();
     }
 
