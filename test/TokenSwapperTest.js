@@ -1,4 +1,4 @@
-const BEP20Dao = artifacts.require("BEP20DAOToken");
+const ERC20Token = artifacts.require("ERC20Token");
 const TokenSwapper = artifacts.require("TokenSwapper");
 const TokenUtilities = artifacts.require("TokenUtilities");
 
@@ -14,7 +14,7 @@ contract(
         let wETHAddress = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"; //WETH Token Address on ETH Mainnet
 
         beforeEach(async () => {
-            token = await BEP20Dao.new("Test Token", "TEST", tokenSupply);
+            token = await ERC20Token.new("Test Token", "TEST", tokenSupply);
             tokenSwapper = await TokenSwapper.new(routerAddress);
             tokenUtilities = await TokenUtilities.new(routerAddress, factoryAddress, wETHAddress);
             //We give the tokenUtilities smart contract some tokens to work with
